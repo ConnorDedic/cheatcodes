@@ -1,0 +1,763 @@
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:46 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:46 -0600
+Nmap scan report for overlord (192.168.0.75)
+Host is up (0.000033s latency).
+All 1000 scanned ports on overlord (192.168.0.75) are in ignored states.
+Not shown: 1000 closed tcp ports (conn-refused)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 0.17 seconds
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:47 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:47 -0600
+Nmap scan report for arrisatom (192.168.0.1)
+Host is up (0.011s latency).
+Not shown: 992 closed tcp ports (conn-refused)
+PORT      STATE    SERVICE  VERSION
+22/tcp    filtered ssh
+23/tcp    filtered telnet
+53/tcp    open     domain   dnsmasq 2.84rc2
+| dns-nsid: 
+|_  bind.version: dnsmasq-2.84rc2
+80/tcp    open     http     lighttpd
+| http-title: ARRIS
+|_Requested resource was /https_redirect.php?page=/
+|_http-trane-info: Problem with XML parsing of /evox/about
+| http-cookie-flags: 
+|   /: 
+|     PHPSESSID: 
+|_      httponly flag not set
+111/tcp   open     rpcbind  2-4 (RPC #100000)
+| rpcinfo: 
+|   program version    port/proto  service
+|   100000  2,3,4        111/tcp   rpcbind
+|   100000  2,3,4        111/udp   rpcbind
+|   538318726 1          58019/tcp   
+|   572660088 1          51327/tcp   
+|   664085  1          41235/udp   
+|_  664085  1          56669/tcp   
+443/tcp   open     ssl/http lighttpd
+|_ssl-date: TLS randomness does not represent time
+|_http-server-header: ARRIS Server
+| ssl-cert: Subject: commonName=00001CA6FD62/organizationName=ARRIS Group, Inc./countryName=US
+| Subject Alternative Name: URI:urn:bbf:usp:id:self::00001CA6FD62
+| Not valid before: 2020-11-06T04:37:22
+|_Not valid after:  2040-11-06T04:37:21
+8181/tcp  open     ssl/http lighttpd
+|_ssl-date: TLS randomness does not represent time
+|_http-server-header: ARRIS Server
+| tls-alpn: 
+|   http/1.0
+|_  http/1.1
+| ssl-cert: Subject: commonName=00001CA6FD62/organizationName=ARRIS Group, Inc./countryName=US
+| Subject Alternative Name: URI:urn:bbf:usp:id:self::00001CA6FD62
+| Not valid before: 2020-11-06T04:37:22
+|_Not valid after:  2040-11-06T04:37:21
+49152/tcp open     upnp
+| fingerprint-strings: 
+|   DNSVersionBindReqTCP, RPCCheck, RTSPRequest, SIPOptions: 
+|     HTTP/0.0 400 Bad Request
+|     SERVER: Linux/5.15.77-cougarmountain-cougarmountain UPnP/1.0 Portable-SDK-for-UPnP-devices/1.6.22
+|     CONTENT-LENGTH: 50
+|     CONTENT-TYPE: text/html
+|     <html><body><h1>400 Bad Request</h1></body></html>
+|   FourOhFourRequest, GetRequest: 
+|     HTTP/1.0 404 Not Found
+|     SERVER: Linux/5.15.77-cougarmountain-cougarmountain UPnP/1.0 Portable-SDK-for-UPnP-devices/1.6.22
+|     CONTENT-LENGTH: 48
+|     CONTENT-TYPE: text/html
+|     <html><body><h1>404 Not Found</h1></body></html>
+|   HTTPOptions: 
+|     HTTP/0.0 501 Not Implemented
+|     SERVER: Linux/5.15.77-cougarmountain-cougarmountain UPnP/1.0 Portable-SDK-for-UPnP-devices/1.6.22
+|     CONTENT-LENGTH: 54
+|     CONTENT-TYPE: text/html
+|_    <html><body><h1>501 Not Implemented</h1></body></html>
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port49152-TCP:V=7.97%I=7%D=6/24%Time=685B4718%P=x86_64-pc-linux-gnu%r(F
+SF:ourOhFourRequest,DA,"HTTP/1\.0\x20404\x20Not\x20Found\r\nSERVER:\x20Lin
+SF:ux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0\x20Portable-SDK
+SF:-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2048\r\nCONTENT-TYPE:\x2
+SF:0text/html\r\n\r\n<html><body><h1>404\x20Not\x20Found</h1></body></html
+SF:>")%r(GetRequest,DA,"HTTP/1\.0\x20404\x20Not\x20Found\r\nSERVER:\x20Lin
+SF:ux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0\x20Portable-SDK
+SF:-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2048\r\nCONTENT-TYPE:\x2
+SF:0text/html\r\n\r\n<html><body><h1>404\x20Not\x20Found</h1></body></html
+SF:>")%r(HTTPOptions,E6,"HTTP/0\.0\x20501\x20Not\x20Implemented\r\nSERVER:
+SF:\x20Linux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0\x20Porta
+SF:ble-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2054\r\nCONTENT-T
+SF:YPE:\x20text/html\r\n\r\n<html><body><h1>501\x20Not\x20Implemented</h1>
+SF:</body></html>")%r(RTSPRequest,DE,"HTTP/0\.0\x20400\x20Bad\x20Request\r
+SF:\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0
+SF:\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2050\r\n
+SF:CONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>400\x20Bad\x20Request
+SF:</h1></body></html>")%r(RPCCheck,DE,"HTTP/0\.0\x20400\x20Bad\x20Request
+SF:\r\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\
+SF:.0\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2050\r
+SF:\nCONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>400\x20Bad\x20Reque
+SF:st</h1></body></html>")%r(DNSVersionBindReqTCP,DE,"HTTP/0\.0\x20400\x20
+SF:Bad\x20Request\r\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarmount
+SF:ain\x20UPnP/1\.0\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-L
+SF:ENGTH:\x2050\r\nCONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>400\x
+SF:20Bad\x20Request</h1></body></html>")%r(SIPOptions,DE,"HTTP/0\.0\x20400
+SF:\x20Bad\x20Request\r\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarm
+SF:ountain\x20UPnP/1\.0\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTE
+SF:NT-LENGTH:\x2050\r\nCONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>4
+SF:00\x20Bad\x20Request</h1></body></html>");
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 34.28 seconds
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:47 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:47 -0600
+Nmap scan report for arrisatom (192.168.0.1)
+Host is up (0.0093s latency).
+Not shown: 992 closed tcp ports (conn-refused)
+PORT      STATE    SERVICE  VERSION
+22/tcp    filtered ssh
+23/tcp    filtered telnet
+53/tcp    open     domain   dnsmasq 2.84rc2
+| dns-nsid: 
+|_  bind.version: dnsmasq-2.84rc2
+80/tcp    open     http     lighttpd
+| http-cookie-flags: 
+|   /: 
+|     PHPSESSID: 
+|_      httponly flag not set
+| http-title: ARRIS
+|_Requested resource was /https_redirect.php?page=/
+|_http-trane-info: Problem with XML parsing of /evox/about
+111/tcp   open     rpcbind  2-4 (RPC #100000)
+| rpcinfo: 
+|   program version    port/proto  service
+|   100000  2,3,4        111/tcp   rpcbind
+|   100000  2,3,4        111/udp   rpcbind
+|   538318726 1          58019/tcp   
+|   572660088 1          51327/tcp   
+|   664085  1          41235/udp   
+|_  664085  1          56669/tcp   
+443/tcp   open     ssl/http lighttpd
+|_http-server-header: ARRIS Server
+|_ssl-date: TLS randomness does not represent time
+| ssl-cert: Subject: commonName=00001CA6FD62/organizationName=ARRIS Group, Inc./countryName=US
+| Subject Alternative Name: URI:urn:bbf:usp:id:self::00001CA6FD62
+| Not valid before: 2020-11-06T04:37:22
+|_Not valid after:  2040-11-06T04:37:21
+8181/tcp  open     ssl/http lighttpd
+| tls-alpn: 
+|   http/1.0
+|_  http/1.1
+|_ssl-date: TLS randomness does not represent time
+| ssl-cert: Subject: commonName=00001CA6FD62/organizationName=ARRIS Group, Inc./countryName=US
+| Subject Alternative Name: URI:urn:bbf:usp:id:self::00001CA6FD62
+| Not valid before: 2020-11-06T04:37:22
+|_Not valid after:  2040-11-06T04:37:21
+|_http-server-header: ARRIS Server
+49152/tcp open     upnp
+| fingerprint-strings: 
+|   DNSVersionBindReqTCP, RPCCheck, RTSPRequest, SIPOptions: 
+|     HTTP/0.0 400 Bad Request
+|     SERVER: Linux/5.15.77-cougarmountain-cougarmountain UPnP/1.0 Portable-SDK-for-UPnP-devices/1.6.22
+|     CONTENT-LENGTH: 50
+|     CONTENT-TYPE: text/html
+|     <html><body><h1>400 Bad Request</h1></body></html>
+|   FourOhFourRequest, GetRequest: 
+|     HTTP/1.0 404 Not Found
+|     SERVER: Linux/5.15.77-cougarmountain-cougarmountain UPnP/1.0 Portable-SDK-for-UPnP-devices/1.6.22
+|     CONTENT-LENGTH: 48
+|     CONTENT-TYPE: text/html
+|     <html><body><h1>404 Not Found</h1></body></html>
+|   HTTPOptions: 
+|     HTTP/0.0 501 Not Implemented
+|     SERVER: Linux/5.15.77-cougarmountain-cougarmountain UPnP/1.0 Portable-SDK-for-UPnP-devices/1.6.22
+|     CONTENT-LENGTH: 54
+|     CONTENT-TYPE: text/html
+|_    <html><body><h1>501 Not Implemented</h1></body></html>
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port49152-TCP:V=7.97%I=7%D=6/24%Time=685B4742%P=x86_64-pc-linux-gnu%r(F
+SF:ourOhFourRequest,DA,"HTTP/1\.0\x20404\x20Not\x20Found\r\nSERVER:\x20Lin
+SF:ux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0\x20Portable-SDK
+SF:-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2048\r\nCONTENT-TYPE:\x2
+SF:0text/html\r\n\r\n<html><body><h1>404\x20Not\x20Found</h1></body></html
+SF:>")%r(GetRequest,DA,"HTTP/1\.0\x20404\x20Not\x20Found\r\nSERVER:\x20Lin
+SF:ux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0\x20Portable-SDK
+SF:-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2048\r\nCONTENT-TYPE:\x2
+SF:0text/html\r\n\r\n<html><body><h1>404\x20Not\x20Found</h1></body></html
+SF:>")%r(HTTPOptions,E6,"HTTP/0\.0\x20501\x20Not\x20Implemented\r\nSERVER:
+SF:\x20Linux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0\x20Porta
+SF:ble-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2054\r\nCONTENT-T
+SF:YPE:\x20text/html\r\n\r\n<html><body><h1>501\x20Not\x20Implemented</h1>
+SF:</body></html>")%r(RTSPRequest,DE,"HTTP/0\.0\x20400\x20Bad\x20Request\r
+SF:\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0
+SF:\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2050\r\n
+SF:CONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>400\x20Bad\x20Request
+SF:</h1></body></html>")%r(RPCCheck,DE,"HTTP/0\.0\x20400\x20Bad\x20Request
+SF:\r\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\
+SF:.0\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2050\r
+SF:\nCONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>400\x20Bad\x20Reque
+SF:st</h1></body></html>")%r(DNSVersionBindReqTCP,DE,"HTTP/0\.0\x20400\x20
+SF:Bad\x20Request\r\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarmount
+SF:ain\x20UPnP/1\.0\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-L
+SF:ENGTH:\x2050\r\nCONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>400\x
+SF:20Bad\x20Request</h1></body></html>")%r(SIPOptions,DE,"HTTP/0\.0\x20400
+SF:\x20Bad\x20Request\r\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarm
+SF:ountain\x20UPnP/1\.0\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTE
+SF:NT-LENGTH:\x2050\r\nCONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>4
+SF:00\x20Bad\x20Request</h1></body></html>");
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 34.70 seconds
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:49 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:49 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:49 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:49 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:49 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:49 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:49 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:49 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:49 -0600
+Nmap scan report for RokuExpress (192.168.0.233)
+Host is up (0.0077s latency).
+Not shown: 999 closed tcp ports (reset)
+PORT     STATE SERVICE VERSION
+7000/tcp open  rtsp    AirTunes rtspd 377.40.00
+MAC Address: D4:E2:2F:20:AD:6D (Roku)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 6.75 seconds
+Nmap scan report for RokuExpress (192.168.0.233)
+Host is up (0.042s latency).
+Not shown: 999 closed tcp ports (conn-refused)
+PORT     STATE SERVICE VERSION
+7000/tcp open  rtsp    AirTunes rtspd 377.40.00
+|_rtsp-methods: ERROR: Script execution failed (use -d to debug)
+|_irc-info: Unable to open connection
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 15.63 seconds
+Nmap scan report for arrisatom (192.168.0.1)
+Host is up (0.0066s latency).
+Not shown: 992 closed tcp ports (reset)
+PORT      STATE    SERVICE  VERSION
+22/tcp    filtered ssh
+23/tcp    filtered telnet
+53/tcp    open     domain   dnsmasq 2.84rc2
+80/tcp    open     http     lighttpd
+111/tcp   open     rpcbind  2-4 (RPC #100000)
+443/tcp   open     ssl/http lighttpd
+8181/tcp  open     ssl/http lighttpd
+49152/tcp open     upnp
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port49152-TCP:V=7.97%I=7%D=6/24%Time=685B4796%P=x86_64-pc-linux-gnu%r(F
+SF:ourOhFourRequest,DA,"HTTP/1\.0\x20404\x20Not\x20Found\r\nSERVER:\x20Lin
+SF:ux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0\x20Portable-SDK
+SF:-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2048\r\nCONTENT-TYPE:\x2
+SF:0text/html\r\n\r\n<html><body><h1>404\x20Not\x20Found</h1></body></html
+SF:>")%r(GetRequest,DA,"HTTP/1\.0\x20404\x20Not\x20Found\r\nSERVER:\x20Lin
+SF:ux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0\x20Portable-SDK
+SF:-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2048\r\nCONTENT-TYPE:\x2
+SF:0text/html\r\n\r\n<html><body><h1>404\x20Not\x20Found</h1></body></html
+SF:>")%r(HTTPOptions,E6,"HTTP/0\.0\x20501\x20Not\x20Implemented\r\nSERVER:
+SF:\x20Linux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0\x20Porta
+SF:ble-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2054\r\nCONTENT-T
+SF:YPE:\x20text/html\r\n\r\n<html><body><h1>501\x20Not\x20Implemented</h1>
+SF:</body></html>")%r(RTSPRequest,DE,"HTTP/0\.0\x20400\x20Bad\x20Request\r
+SF:\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0
+SF:\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2050\r\n
+SF:CONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>400\x20Bad\x20Request
+SF:</h1></body></html>")%r(RPCCheck,DE,"HTTP/0\.0\x20400\x20Bad\x20Request
+SF:\r\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\
+SF:.0\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2050\r
+SF:\nCONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>400\x20Bad\x20Reque
+SF:st</h1></body></html>")%r(DNSVersionBindReqTCP,DE,"HTTP/0\.0\x20400\x20
+SF:Bad\x20Request\r\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarmount
+SF:ain\x20UPnP/1\.0\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-L
+SF:ENGTH:\x2050\r\nCONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>400\x
+SF:20Bad\x20Request</h1></body></html>")%r(SIPOptions,DE,"HTTP/0\.0\x20400
+SF:\x20Bad\x20Request\r\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarm
+SF:ountain\x20UPnP/1\.0\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTE
+SF:NT-LENGTH:\x2050\r\nCONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>4
+SF:00\x20Bad\x20Request</h1></body></html>");
+MAC Address: 28:F5:D1:D8:D0:FE (Commscope)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 43.18 seconds
+Nmap scan report for arrisatom (192.168.0.1)
+Host is up (0.0033s latency).
+Not shown: 992 closed tcp ports (reset)
+PORT      STATE    SERVICE  VERSION
+22/tcp    filtered ssh
+23/tcp    filtered telnet
+53/tcp    open     domain   dnsmasq 2.84rc2
+80/tcp    open     http     lighttpd
+111/tcp   open     rpcbind  2-4 (RPC #100000)
+443/tcp   open     ssl/http lighttpd
+8181/tcp  open     ssl/http lighttpd
+49152/tcp open     upnp
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port49152-TCP:V=7.97%I=7%D=6/24%Time=685B4799%P=x86_64-pc-linux-gnu%r(F
+SF:ourOhFourRequest,DA,"HTTP/1\.0\x20404\x20Not\x20Found\r\nSERVER:\x20Lin
+SF:ux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0\x20Portable-SDK
+SF:-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2048\r\nCONTENT-TYPE:\x2
+SF:0text/html\r\n\r\n<html><body><h1>404\x20Not\x20Found</h1></body></html
+SF:>")%r(GetRequest,DA,"HTTP/1\.0\x20404\x20Not\x20Found\r\nSERVER:\x20Lin
+SF:ux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0\x20Portable-SDK
+SF:-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2048\r\nCONTENT-TYPE:\x2
+SF:0text/html\r\n\r\n<html><body><h1>404\x20Not\x20Found</h1></body></html
+SF:>")%r(HTTPOptions,E6,"HTTP/0\.0\x20501\x20Not\x20Implemented\r\nSERVER:
+SF:\x20Linux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0\x20Porta
+SF:ble-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2054\r\nCONTENT-T
+SF:YPE:\x20text/html\r\n\r\n<html><body><h1>501\x20Not\x20Implemented</h1>
+SF:</body></html>")%r(RTSPRequest,DE,"HTTP/0\.0\x20400\x20Bad\x20Request\r
+SF:\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0
+SF:\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2050\r\n
+SF:CONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>400\x20Bad\x20Request
+SF:</h1></body></html>")%r(RPCCheck,DE,"HTTP/0\.0\x20400\x20Bad\x20Request
+SF:\r\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\
+SF:.0\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2050\r
+SF:\nCONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>400\x20Bad\x20Reque
+SF:st</h1></body></html>")%r(DNSVersionBindReqTCP,DE,"HTTP/0\.0\x20400\x20
+SF:Bad\x20Request\r\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarmount
+SF:ain\x20UPnP/1\.0\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-L
+SF:ENGTH:\x2050\r\nCONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>400\x
+SF:20Bad\x20Request</h1></body></html>")%r(SIPOptions,DE,"HTTP/0\.0\x20400
+SF:\x20Bad\x20Request\r\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarm
+SF:ountain\x20UPnP/1\.0\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTE
+SF:NT-LENGTH:\x2050\r\nCONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>4
+SF:00\x20Bad\x20Request</h1></body></html>");
+MAC Address: 28:F5:D1:D8:D0:FE (Commscope)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 41.22 seconds
+Nmap scan report for arrisatom (192.168.0.1)
+Host is up (0.0094s latency).
+Not shown: 992 closed tcp ports (conn-refused)
+PORT      STATE    SERVICE  VERSION
+22/tcp    filtered ssh
+23/tcp    filtered telnet
+53/tcp    open     domain   dnsmasq 2.84rc2
+| dns-nsid: 
+|_  bind.version: dnsmasq-2.84rc2
+80/tcp    open     http     lighttpd
+| http-title: ARRIS
+|_Requested resource was /https_redirect.php?page=/
+|_http-trane-info: Problem with XML parsing of /evox/about
+| http-cookie-flags: 
+|   /: 
+|     PHPSESSID: 
+|_      httponly flag not set
+111/tcp   open     rpcbind  2-4 (RPC #100000)
+| rpcinfo: 
+|   program version    port/proto  service
+|   100000  2,3,4        111/tcp   rpcbind
+|   100000  2,3,4        111/udp   rpcbind
+|   538318726 1          58019/tcp   
+|   572660088 1          51327/tcp   
+|   664085  1          41235/udp   
+|_  664085  1          56669/tcp   
+443/tcp   open     ssl/http lighttpd
+| ssl-cert: Subject: commonName=00001CA6FD62/organizationName=ARRIS Group, Inc./countryName=US
+| Subject Alternative Name: URI:urn:bbf:usp:id:self::00001CA6FD62
+| Not valid before: 2020-11-06T04:37:22
+|_Not valid after:  2040-11-06T04:37:21
+|_ssl-date: TLS randomness does not represent time
+|_http-server-header: ARRIS Server
+8181/tcp  open     ssl/http lighttpd
+|_http-server-header: ARRIS Server
+| tls-alpn: 
+|   http/1.0
+|_  http/1.1
+|_ssl-date: TLS randomness does not represent time
+| ssl-cert: Subject: commonName=00001CA6FD62/organizationName=ARRIS Group, Inc./countryName=US
+| Subject Alternative Name: URI:urn:bbf:usp:id:self::00001CA6FD62
+| Not valid before: 2020-11-06T04:37:22
+|_Not valid after:  2040-11-06T04:37:21
+49152/tcp open     upnp
+| fingerprint-strings: 
+|   DNSVersionBindReqTCP, RPCCheck, RTSPRequest, SIPOptions: 
+|     HTTP/0.0 400 Bad Request
+|     SERVER: Linux/5.15.77-cougarmountain-cougarmountain UPnP/1.0 Portable-SDK-for-UPnP-devices/1.6.22
+|     CONTENT-LENGTH: 50
+|     CONTENT-TYPE: text/html
+|     <html><body><h1>400 Bad Request</h1></body></html>
+|   FourOhFourRequest, GetRequest: 
+|     HTTP/1.0 404 Not Found
+|     SERVER: Linux/5.15.77-cougarmountain-cougarmountain UPnP/1.0 Portable-SDK-for-UPnP-devices/1.6.22
+|     CONTENT-LENGTH: 48
+|     CONTENT-TYPE: text/html
+|     <html><body><h1>404 Not Found</h1></body></html>
+|   HTTPOptions: 
+|     HTTP/0.0 501 Not Implemented
+|     SERVER: Linux/5.15.77-cougarmountain-cougarmountain UPnP/1.0 Portable-SDK-for-UPnP-devices/1.6.22
+|     CONTENT-LENGTH: 54
+|     CONTENT-TYPE: text/html
+|_    <html><body><h1>501 Not Implemented</h1></body></html>
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port49152-TCP:V=7.97%I=7%D=6/24%Time=685B4795%P=x86_64-pc-linux-gnu%r(F
+SF:ourOhFourRequest,DA,"HTTP/1\.0\x20404\x20Not\x20Found\r\nSERVER:\x20Lin
+SF:ux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0\x20Portable-SDK
+SF:-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2048\r\nCONTENT-TYPE:\x2
+SF:0text/html\r\n\r\n<html><body><h1>404\x20Not\x20Found</h1></body></html
+SF:>")%r(GetRequest,DA,"HTTP/1\.0\x20404\x20Not\x20Found\r\nSERVER:\x20Lin
+SF:ux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0\x20Portable-SDK
+SF:-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2048\r\nCONTENT-TYPE:\x2
+SF:0text/html\r\n\r\n<html><body><h1>404\x20Not\x20Found</h1></body></html
+SF:>")%r(HTTPOptions,E6,"HTTP/0\.0\x20501\x20Not\x20Implemented\r\nSERVER:
+SF:\x20Linux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0\x20Porta
+SF:ble-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2054\r\nCONTENT-T
+SF:YPE:\x20text/html\r\n\r\n<html><body><h1>501\x20Not\x20Implemented</h1>
+SF:</body></html>")%r(RTSPRequest,DE,"HTTP/0\.0\x20400\x20Bad\x20Request\r
+SF:\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0
+SF:\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2050\r\n
+SF:CONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>400\x20Bad\x20Request
+SF:</h1></body></html>")%r(RPCCheck,DE,"HTTP/0\.0\x20400\x20Bad\x20Request
+SF:\r\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\
+SF:.0\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2050\r
+SF:\nCONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>400\x20Bad\x20Reque
+SF:st</h1></body></html>")%r(DNSVersionBindReqTCP,DE,"HTTP/0\.0\x20400\x20
+SF:Bad\x20Request\r\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarmount
+SF:ain\x20UPnP/1\.0\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-L
+SF:ENGTH:\x2050\r\nCONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>400\x
+SF:20Bad\x20Request</h1></body></html>")%r(SIPOptions,DE,"HTTP/0\.0\x20400
+SF:\x20Bad\x20Request\r\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarm
+SF:ountain\x20UPnP/1\.0\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTE
+SF:NT-LENGTH:\x2050\r\nCONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>4
+SF:00\x20Bad\x20Request</h1></body></html>");
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 50.17 seconds
+Nmap scan report for arrisatom (192.168.0.1)
+Host is up (0.011s latency).
+Not shown: 992 closed tcp ports (conn-refused)
+PORT      STATE    SERVICE  VERSION
+22/tcp    filtered ssh
+23/tcp    filtered telnet
+53/tcp    open     domain   dnsmasq 2.84rc2
+| dns-nsid: 
+|_  bind.version: dnsmasq-2.84rc2
+80/tcp    open     http     lighttpd
+| http-cookie-flags: 
+|   /: 
+|     PHPSESSID: 
+|_      httponly flag not set
+|_http-trane-info: Problem with XML parsing of /evox/about
+| http-title: ARRIS
+|_Requested resource was /https_redirect.php?page=/
+111/tcp   open     rpcbind  2-4 (RPC #100000)
+| rpcinfo: 
+|   program version    port/proto  service
+|   100000  2,3,4        111/tcp   rpcbind
+|   100000  2,3,4        111/udp   rpcbind
+|   538318726 1          58019/tcp   
+|   572660088 1          51327/tcp   
+|   664085  1          41235/udp   
+|_  664085  1          56669/tcp   
+443/tcp   open     ssl/http lighttpd
+|_ssl-date: TLS randomness does not represent time
+|_http-server-header: ARRIS Server
+| ssl-cert: Subject: commonName=00001CA6FD62/organizationName=ARRIS Group, Inc./countryName=US
+| Subject Alternative Name: URI:urn:bbf:usp:id:self::00001CA6FD62
+| Not valid before: 2020-11-06T04:37:22
+|_Not valid after:  2040-11-06T04:37:21
+8181/tcp  open     ssl/http lighttpd
+| ssl-cert: Subject: commonName=00001CA6FD62/organizationName=ARRIS Group, Inc./countryName=US
+| Subject Alternative Name: URI:urn:bbf:usp:id:self::00001CA6FD62
+| Not valid before: 2020-11-06T04:37:22
+|_Not valid after:  2040-11-06T04:37:21
+| tls-alpn: 
+|   http/1.0
+|_  http/1.1
+|_ssl-date: TLS randomness does not represent time
+|_http-server-header: ARRIS Server
+49152/tcp open     upnp
+| fingerprint-strings: 
+|   DNSVersionBindReqTCP, RPCCheck, RTSPRequest, SIPOptions: 
+|     HTTP/0.0 400 Bad Request
+|     SERVER: Linux/5.15.77-cougarmountain-cougarmountain UPnP/1.0 Portable-SDK-for-UPnP-devices/1.6.22
+|     CONTENT-LENGTH: 50
+|     CONTENT-TYPE: text/html
+|     <html><body><h1>400 Bad Request</h1></body></html>
+|   FourOhFourRequest, GetRequest: 
+|     HTTP/1.0 404 Not Found
+|     SERVER: Linux/5.15.77-cougarmountain-cougarmountain UPnP/1.0 Portable-SDK-for-UPnP-devices/1.6.22
+|     CONTENT-LENGTH: 48
+|     CONTENT-TYPE: text/html
+|     <html><body><h1>404 Not Found</h1></body></html>
+|   HTTPOptions: 
+|     HTTP/0.0 501 Not Implemented
+|     SERVER: Linux/5.15.77-cougarmountain-cougarmountain UPnP/1.0 Portable-SDK-for-UPnP-devices/1.6.22
+|     CONTENT-LENGTH: 54
+|     CONTENT-TYPE: text/html
+|_    <html><body><h1>501 Not Implemented</h1></body></html>
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port49152-TCP:V=7.97%I=7%D=6/24%Time=685B4799%P=x86_64-pc-linux-gnu%r(F
+SF:ourOhFourRequest,DA,"HTTP/1\.0\x20404\x20Not\x20Found\r\nSERVER:\x20Lin
+SF:ux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0\x20Portable-SDK
+SF:-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2048\r\nCONTENT-TYPE:\x2
+SF:0text/html\r\n\r\n<html><body><h1>404\x20Not\x20Found</h1></body></html
+SF:>")%r(GetRequest,DA,"HTTP/1\.0\x20404\x20Not\x20Found\r\nSERVER:\x20Lin
+SF:ux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0\x20Portable-SDK
+SF:-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2048\r\nCONTENT-TYPE:\x2
+SF:0text/html\r\n\r\n<html><body><h1>404\x20Not\x20Found</h1></body></html
+SF:>")%r(HTTPOptions,E6,"HTTP/0\.0\x20501\x20Not\x20Implemented\r\nSERVER:
+SF:\x20Linux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0\x20Porta
+SF:ble-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2054\r\nCONTENT-T
+SF:YPE:\x20text/html\r\n\r\n<html><body><h1>501\x20Not\x20Implemented</h1>
+SF:</body></html>")%r(RTSPRequest,DE,"HTTP/0\.0\x20400\x20Bad\x20Request\r
+SF:\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\.0
+SF:\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2050\r\n
+SF:CONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>400\x20Bad\x20Request
+SF:</h1></body></html>")%r(RPCCheck,DE,"HTTP/0\.0\x20400\x20Bad\x20Request
+SF:\r\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarmountain\x20UPnP/1\
+SF:.0\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-LENGTH:\x2050\r
+SF:\nCONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>400\x20Bad\x20Reque
+SF:st</h1></body></html>")%r(DNSVersionBindReqTCP,DE,"HTTP/0\.0\x20400\x20
+SF:Bad\x20Request\r\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarmount
+SF:ain\x20UPnP/1\.0\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTENT-L
+SF:ENGTH:\x2050\r\nCONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>400\x
+SF:20Bad\x20Request</h1></body></html>")%r(SIPOptions,DE,"HTTP/0\.0\x20400
+SF:\x20Bad\x20Request\r\nSERVER:\x20Linux/5\.15\.77-cougarmountain-cougarm
+SF:ountain\x20UPnP/1\.0\x20Portable-SDK-for-UPnP-devices/1\.6\.22\r\nCONTE
+SF:NT-LENGTH:\x2050\r\nCONTENT-TYPE:\x20text/html\r\n\r\n<html><body><h1>4
+SF:00\x20Bad\x20Request</h1></body></html>");
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 47.40 seconds
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:50 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:50 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:50 -0600
+Nmap scan report for 192.168.0.59
+Host is up (0.000030s latency).
+All 1000 scanned ports on 192.168.0.59 are in ignored states.
+Not shown: 1000 closed tcp ports (conn-refused)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 0.67 seconds
+Nmap scan report for 192.168.0.59
+Host is up (0.0000020s latency).
+All 1000 scanned ports on 192.168.0.59 are in ignored states.
+Not shown: 1000 closed tcp ports (reset)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 0.66 seconds
+Nmap scan report for 192.168.0.59
+Host is up (0.0000020s latency).
+Not shown: 999 closed udp ports (port-unreach)
+PORT     STATE         SERVICE  VERSION
+5353/udp open|filtered zeroconf
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 105.49 seconds
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:55 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:55 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:55 -0600
+Nmap scan report for 192.168.0.59
+Host is up (0.000033s latency).
+All 1000 scanned ports on 192.168.0.59 are in ignored states.
+Not shown: 1000 closed tcp ports (conn-refused)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 0.67 seconds
+Nmap scan report for 192.168.0.59
+Host is up (0.0000020s latency).
+All 1000 scanned ports on 192.168.0.59 are in ignored states.
+Not shown: 1000 closed tcp ports (reset)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 0.67 seconds
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:55 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:55 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:55 -0600
+Nmap scan report for 192.168.0.59
+Host is up (0.000037s latency).
+All 1000 scanned ports on 192.168.0.59 are in ignored states.
+Not shown: 1000 closed tcp ports (conn-refused)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 0.67 seconds
+Nmap scan report for 192.168.0.59
+Host is up (0.0000010s latency).
+All 1000 scanned ports on 192.168.0.59 are in ignored states.
+Not shown: 1000 closed tcp ports (reset)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 0.67 seconds
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:55 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:55 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:55 -0600
+Nmap scan report for 192.168.0.59
+Host is up (0.000031s latency).
+All 1000 scanned ports on 192.168.0.59 are in ignored states.
+Not shown: 1000 closed tcp ports (conn-refused)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 0.67 seconds
+Nmap scan report for 192.168.0.59
+Host is up (0.0000030s latency).
+All 1000 scanned ports on 192.168.0.59 are in ignored states.
+Not shown: 1000 closed tcp ports (reset)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 0.68 seconds
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:56 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:56 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:56 -0600
+Nmap scan report for 192.168.0.59
+Host is up (0.000031s latency).
+All 1000 scanned ports on 192.168.0.59 are in ignored states.
+Not shown: 1000 closed tcp ports (conn-refused)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 0.67 seconds
+Nmap scan report for 192.168.0.59
+Host is up (0.0000020s latency).
+All 1000 scanned ports on 192.168.0.59 are in ignored states.
+Not shown: 1000 closed tcp ports (reset)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 0.66 seconds
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:56 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:56 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:56 -0600
+Nmap scan report for 192.168.0.59
+Host is up (0.000036s latency).
+All 1000 scanned ports on 192.168.0.59 are in ignored states.
+Not shown: 1000 closed tcp ports (conn-refused)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 0.67 seconds
+Nmap scan report for 192.168.0.59
+Host is up (0.0000010s latency).
+All 1000 scanned ports on 192.168.0.59 are in ignored states.
+Not shown: 1000 closed tcp ports (reset)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 0.67 seconds
+Nmap scan report for 192.168.0.59
+Host is up (0.0000020s latency).
+Not shown: 999 closed udp ports (port-unreach)
+PORT     STATE         SERVICE  VERSION
+5353/udp open|filtered zeroconf
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 105.47 seconds
+Nmap scan report for 192.168.0.59
+Host is up (0.0000020s latency).
+Not shown: 999 closed udp ports (port-unreach)
+PORT     STATE         SERVICE  VERSION
+5353/udp open|filtered zeroconf
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 105.48 seconds
+Nmap scan report for 192.168.0.59
+Host is up (0.0000030s latency).
+Not shown: 999 closed udp ports (port-unreach)
+PORT     STATE         SERVICE  VERSION
+5353/udp open|filtered zeroconf
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 105.46 seconds
+Nmap scan report for 192.168.0.59
+Host is up (0.0000020s latency).
+Not shown: 999 closed udp ports (port-unreach)
+PORT     STATE         SERVICE  VERSION
+5353/udp open|filtered zeroconf
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 105.46 seconds
+Nmap scan report for 192.168.0.59
+Host is up (0.0000040s latency).
+Not shown: 999 closed udp ports (port-unreach)
+PORT     STATE         SERVICE  VERSION
+5353/udp open|filtered zeroconf
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 105.47 seconds
+Nmap scan report for RokuExpress (192.168.0.233)
+Host is up (0.0050s latency).
+Not shown: 997 closed udp ports (port-unreach)
+PORT     STATE         SERVICE VERSION
+68/udp   open|filtered dhcpc
+1900/udp open          upnp?
+5353/udp open          mdns    DNS-based service discovery
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port1900-UDP:V=7.97%I=7%D=6/24%Time=685B4B99%P=x86_64-pc-linux-gnu%r(UP
+SF:NP_MSEARCH,2D8,"HTTP/1\.1\x20200\x20OK\r\nCache-Control:\x20max-age=360
+SF:0\r\nST:\x20upnp:rootdevice\r\nUSN:\x20uuid:28002180-0000-1000-8000-d4e
+SF:22f20ad6d::upnp:rootdevice\r\nExt:\x20\r\nServer:\x20Roku/14\.5\.4\x20U
+SF:PnP/1\.0\x20Roku/14\.5\.4\r\nLOCATION:\x20http://192\.168\.0\.233:8060/
+SF:\r\n\r\nHTTP/1\.1\x20200\x20OK\r\nCache-Control:\x20max-age=3600\r\nST:
+SF:\x20roku:ecp\r\nUSN:\x20uuid:roku:ecp:X02600RHCS4F\r\nExt:\x20\r\nServe
+SF:r:\x20Roku/14\.5\.4\x20UPnP/1\.0\x20Roku/14\.5\.4\r\nLOCATION:\x20http:
+SF://192\.168\.0\.233:8060/\r\ndevice-group\.roku\.com:\x208C34340CFC441E9
+SF:7F081\r\n\r\nHTTP/1\.1\x20200\x20OK\r\nCache-Control:\x20max-age=3600\r
+SF:\nST:\x20urn:dial-multiscreen-org:service:dial:1\r\nUSN:\x20uuid:280021
+SF:80-0000-1000-8000-d4e22f20ad6d::urn:dial-multiscreen-org:service:dial:1
+SF:\r\nExt:\x20\r\nServer:\x20Roku/14\.5\.4\x20UPnP/1\.0\x20Roku/14\.5\.4\
+SF:r\nLOCATION:\x20http://192\.168\.0\.233:8060/dial/dd\.xml\r\n\r\n");
+MAC Address: D4:E2:2F:20:AD:6D (Roku)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 1113.91 seconds
+Nmap scan report for arrisatom (192.168.0.1)
+Host is up (0.00095s latency).
+Not shown: 995 closed udp ports (port-unreach)
+PORT     STATE         SERVICE VERSION
+53/udp   open          domain  dnsmasq 2.84rc2
+67/udp   open          dhcps?
+123/udp  open          ntp     NTP v4 (secondary server)
+161/udp  open|filtered snmp
+1900/udp open|filtered upnp
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port67-UDP:V=7.97%I=7%D=6/24%Time=685B4BC2%P=x86_64-pc-linux-gnu%r(DHCP
+SF:_INFORM,12C,"\x02\x01\x06\0\x01#Eg\0\0\0\0\xff\xff\xff\xff\0\0\0\0\0\0\
+SF:0\0\0\0\0\0\0\x0e5\xd4\xd8Q\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0
+SF:\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
+SF:0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0
+SF:\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
+SF:0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0
+SF:\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
+SF:0\0\0c\x82Sc5\x01\x056\x04\xc0\xa8\0\x01\xff\0\0\0\0\0\0\0\0\0\0\0\0\0\
+SF:0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0
+SF:\0");
+MAC Address: 28:F5:D1:D8:D0:FE (Commscope)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 1178.65 seconds
+Nmap scan report for arrisatom (192.168.0.1)
+Host is up (0.00091s latency).
+Not shown: 858 closed udp ports (port-unreach), 139 open|filtered udp ports (no-response)
+PORT    STATE SERVICE VERSION
+53/udp  open  domain  dnsmasq 2.84rc2
+67/udp  open  dhcps?
+123/udp open  ntp     NTP v4 (secondary server)
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port67-UDP:V=7.97%I=7%D=6/24%Time=685B4EF2%P=x86_64-pc-linux-gnu%r(DHCP
+SF:_INFORM,12C,"\x02\x01\x06\0\x01#Eg\0\0\0\0\xff\xff\xff\xff\0\0\0\0\0\0\
+SF:0\0\0\0\0\0\0\x0e5\xd4\xd8Q\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0
+SF:\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
+SF:0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0
+SF:\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
+SF:0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0
+SF:\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
+SF:0\0\0c\x82Sc5\x01\x056\x04\xc0\xa8\0\x01\xff\0\0\0\0\0\0\0\0\0\0\0\0\0\
+SF:0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0
+SF:\0");
+MAC Address: 28:F5:D1:D8:D0:FE (Commscope)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 2497.83 seconds
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-25 09:31 -0600
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.000062s latency).
+All 1000 scanned ports on localhost (127.0.0.1) are in ignored states.
+Not shown: 1000 closed tcp ports (conn-refused)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 0.45 seconds
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-25 09:31 -0600
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.000085s latency).
+All 1000 scanned ports on localhost (127.0.0.1) are in ignored states.
+Not shown: 1000 closed tcp ports (conn-refused)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 0.37 seconds

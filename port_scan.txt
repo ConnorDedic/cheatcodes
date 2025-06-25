@@ -1,0 +1,31 @@
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:40 -0600
+Note: Host seems down. If it is really up, but blocking our ping probes, try -Pn
+Nmap done: 1 IP address (0 hosts up) scanned in 7.60 seconds
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:41 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:41 -0600
+Note: Host seems down. If it is really up, but blocking our ping probes, try -Pn
+Nmap done: 1 IP address (0 hosts up) scanned in 7.61 seconds
+Note: Host seems down. If it is really up, but blocking our ping probes, try -Pn
+Nmap done: 1 IP address (0 hosts up) scanned in 6.02 seconds
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:41 -0600
+Nmap done: 1 IP address (0 hosts up) scanned in 6.01 seconds
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:42 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:42 -0600
+Note: Host seems down. If it is really up, but blocking our ping probes, try -Pn
+Nmap done: 1 IP address (0 hosts up) scanned in 6.02 seconds
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:42 -0600
+Note: Host seems down. If it is really up, but blocking our ping probes, try -Pn
+Nmap done: 1 IP address (0 hosts up) scanned in 7.61 seconds
+Nmap done: 1 IP address (0 hosts up) scanned in 6.00 seconds
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:42 -0600
+Starting Nmap 7.97 ( https://nmap.org ) at 2025-06-24 18:42 -0600
+Nmap scan report for RokuExpress (192.168.0.233)
+Host is up (0.013s latency).
+Not shown: 999 closed tcp ports (conn-refused)
+PORT     STATE SERVICE VERSION
+7000/tcp open  rtsp    AirTunes rtspd 377.40.00
+|_rtsp-methods: ERROR: Script execution failed (use -d to debug)
+|_irc-info: Unable to open connection
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 15.46 seconds
