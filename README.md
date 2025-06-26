@@ -7,11 +7,12 @@ with me doing work and you stealing it.
 
 you lazy thief.
 
-im still working on start, rn if you wanna use it do this
+To use, just run:
 
 ```
-sudo -s 
-export rhost="<target>"
-./stalk.sh 
+export RHOST="<target>"
+./stalk.sh
 ```
 
+The script will prompt you to set or confirm the RHOST (target) as needed.
+also this if for ctf's only, not stalking you ex. just dont. 

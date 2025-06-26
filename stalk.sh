@@ -4,6 +4,7 @@
 
 declare -a accessible_pages
 declare -a forbidden_pages
+declare -a misc_pages
 smb_vulnerable=false
 
 update_status() {
@@ -12,11 +13,96 @@ update_status() {
     echo "{\"status\":\"$status\",\"message\":\"$message\",\"target\":\"$rhost\"}" > output/status.json
 }
 
+# RHOST environment variable setup
+if [ -n "$RHOST" ]; then
+    echo "[+] RHOST is currently set to $RHOST."
+    read -p "[?] Do you want to change it? (y/N): " change_rhost
+    if [[ "$change_rhost" =~ ^[Yy]$ ]]; then
+        read -p "[?] Enter new RHOST value: " new_rhost
+        export RHOST="$new_rhost"
+        echo "[+] RHOST updated to $RHOST."
+    else
+        echo "[+] Continuing with RHOST=$RHOST."
+    fi
+else
+    read -p "[?] RHOST is not set. Enter RHOST value: " RHOST
+    export RHOST
+    echo "[+] RHOST set to $RHOST."
+fi
+
+# Set rhost variable for use in script
+rhost="$RHOST"
+
 # Set initial status
-update_status "running" "Initializing enumeration script..."
+update_status "scanning" "Initializing enumeration script..."
 
 # Ensure output directory exists
 mkdir -p output
+
+# Reset HTML page to default state
+cat > output/enumeration_report.html << EOF
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Enigma-3NMA cheat codes - $rhost</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #1a1a1a; color: #e0e0e0; }
+        .container { max-width: 1200px; margin: 0 auto; background: #2d2d2d; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        h1 { color: #ffffff; border-bottom: 2px solid #007acc; padding-bottom: 10px; }
+        h2 { color: #007acc; margin-top: 30px; }
+        h3 { color: #cccccc; }
+        .section { margin: 20px 0; padding: 15px; border-left: 4px solid #007acc; background-color: #3a3a3a; }
+        .port { display: inline-block; margin: 5px; padding: 5px 10px; background-color: #1e3a5f; border-radius: 4px; color: #ffffff; }
+        .vuln { color: #ff6b6b; font-weight: bold; }
+        .web-page { margin: 5px 0; padding: 5px; background-color: #2d4a2d; border-radius: 4px; }
+        .web-page a { color: #4caf50; text-decoration: none; }
+        .web-page a:hover { color: #66bb6a; text-decoration: underline; }
+        .forbidden { background-color: #4a3a2d; }
+        .forbidden a { color: #ff9800; }
+        .forbidden a:hover { color: #ffb74d; }
+        .misc { background-color: #3a2d4a; }
+        .misc a { color: #9c27b0; }
+        .misc a:hover { color: #ba68c8; }
+        .timestamp { color: #888888; font-size: 0.9em; margin-bottom: 20px; }
+        .status { background-color: #2d4a2d; border: 1px solid #4caf50; border-radius: 4px; padding: 10px; margin-bottom: 20px; color: #e0e0e0; }
+        .status.running { background-color: #4a3a2d; border-color: #ff9800; }
+        .status.scanning { background-color: #2d4a2d; border-color: #007acc; }
+        .status.complete { background-color: #2d4a2d; border-color: #4caf50; }
+        .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid #555555; border-top: 3px solid #007acc; border-radius: 50%; animation: spin 1s linear infinite; }
+        p { color: #cccccc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Enumeration Report</h1>
+        <div class="timestamp">Generated on: $(date)</div>
+        <div id="target-display" class="timestamp">Target: $rhost</div>
+        
+        <div class="section">
+            <h2>Open Ports</h2>
+            <div>
+                <p>Scanning in progress...</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Web Directories Found</h2>
+            <h3>Accessible Pages</h3>
+            <p>Scanning in progress...</p>
+            <h3>Forbidden Pages (Potential Interest)</h3>
+            <p>Scanning in progress...</p>
+        </div>
+        
+        <div class="section">
+            <h2>Potential Vulnerabilities</h2>
+            <div>
+                <p>Scanning in progress...</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+EOF
 
 loading_animation() {
     local pid=$1
@@ -45,45 +131,51 @@ dir_fuzz() {
     
     # Parse ffuf results and add to lists
     if [[ -f "output/ffuf_$port.json" ]]; then
-        # Extract accessible pages (200,204,301,302,307)
-        while IFS= read -r line; do
-            if [[ $line =~ \"status\":(200|204|301|302|307) ]]; then
-                # Extract just the path from the full URL
-                full_url=$(echo "$line" | grep -o '"url":"[^"]*"' | cut -d'"' -f4)
-                path=$(echo "$full_url" | sed 's|http://[^/]*||')
-                if [[ -n "$path" ]]; then
-                    accessible_pages+=("http://$rhost:$port$path")
-                fi
-            fi
-        done < <(jq -r '.results[] | "{\"status\":\(.status),\"url\":\"\(.url)\"}"' "output/ffuf_$port.json" 2>/dev/null)
+        echo "Parsing ffuf results for port $port..."
         
-        # Extract forbidden pages (401,403) - make sure they don't overlap with accessible
-        while IFS= read -r line; do
-            if [[ $line =~ \"status\":(401|403) ]]; then
-                # Extract just the path from the full URL
-                full_url=$(echo "$line" | grep -o '"url":"[^"]*"' | cut -d'"' -f4)
-                path=$(echo "$full_url" | sed 's|http://[^/]*||')
-                if [[ -n "$path" ]]; then
-                    # Check if this path is already in accessible_pages and remove it if so
+        # Use jq to extract results in a simpler format
+        while IFS= read -r result; do
+            # Parse the result line: path,status,url
+            path=$(echo "$result" | cut -d',' -f1)
+            status=$(echo "$result" | cut -d',' -f2)
+            full_url=$(echo "$result" | cut -d',' -f3)
+            
+            if [[ -n "$path" && -n "$status" && "$status" =~ ^[0-9]+$ ]]; then
+                # Create the final URL with domain
+                final_url="http://$rhost:$port/$path"
+                
+                # Categorize based on status code
+                if [[ "$status" =~ ^(200|204|301|302|307)$ ]]; then
+                    # Check if already in forbidden and remove
+                    for i in "${!forbidden_pages[@]}"; do
+                        if [[ "${forbidden_pages[$i]}" == "$final_url" ]]; then
+                            unset "forbidden_pages[$i]"
+                        fi
+                    done
+                    # Add to accessible
+                    accessible_pages+=("$final_url")
+                elif [[ "$status" =~ ^(401|403)$ ]]; then
+                    # Check if already in accessible and remove
                     for i in "${!accessible_pages[@]}"; do
-                        if [[ "${accessible_pages[$i]}" == "http://$rhost:$port$path" ]]; then
+                        if [[ "${accessible_pages[$i]}" == "$final_url" ]]; then
                             unset "accessible_pages[$i]"
                         fi
                     done
-                    # Rebuild array to remove gaps
-                    accessible_pages=("${accessible_pages[@]}")
-                    # Add to forbidden pages
-                    forbidden_pages+=("http://$rhost:$port$path")
+                    # Add to forbidden
+                    forbidden_pages+=("$final_url")
                 fi
             fi
-        done < <(jq -r '.results[] | "{\"status\":\(.status),\"url\":\"\(.url)\"}"' "output/ffuf_$port.json" 2>/dev/null)
+        done < <(jq -r '.results[] | "\(.input.FUZZ),\(.status),\(.url)"' "output/ffuf_$port.json" 2>/dev/null)
+        
+        # Rebuild arrays to remove gaps
+        accessible_pages=("${accessible_pages[@]}")
+        forbidden_pages=("${forbidden_pages[@]}")
+        
+        echo "Final results for port $port:"
+        echo "  Accessible: ${#accessible_pages[@]} pages"
+        echo "  Forbidden: ${#forbidden_pages[@]} pages"
     fi
 }
-
-if [[ -z "$rhost" ]]; then
-  echo "Please run ./start.sh to and set a RHOST"
-  exit 1
-fi  
 
 update_status "running" "Checking target configuration..."
 
@@ -337,7 +429,6 @@ if [[ ${#forbidden_pages[@]} -gt 0 ]]; then
 else
     echo "No forbidden pages found"
 fi
-echo ""
 
 echo "POTENTIAL VULNERABILITIES:"
 if [[ "$smb_vulnerable" == "true" ]]; then
@@ -355,72 +446,37 @@ cat > output/enumeration_report.html << EOF
 <head>
     <title>Enigma-3NMA cheat codes - $rhost</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f0f0f0; }
-        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h1 { color: #333; border-bottom: 2px solid #007acc; padding-bottom: 10px; }
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #1a1a1a; color: #e0e0e0; }
+        .container { max-width: 1200px; margin: 0 auto; background: #2d2d2d; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        h1 { color: #ffffff; border-bottom: 2px solid #007acc; padding-bottom: 10px; }
         h2 { color: #007acc; margin-top: 30px; }
-        .section { margin: 20px 0; padding: 15px; border-left: 4px solid #007acc; background-color: #f9f9f9; }
-        .port { display: inline-block; margin: 5px; padding: 5px 10px; background-color: #e3f2fd; border-radius: 4px; }
-        .vuln { color: #d32f2f; font-weight: bold; }
-        .web-page { margin: 5px 0; padding: 5px; background-color: #f1f8e9; border-radius: 4px; }
-        .forbidden { background-color: #fff3e0; }
-        .timestamp { color: #666; font-size: 0.9em; margin-bottom: 20px; }
-        .status { background-color: #e8f5e8; border: 1px solid #4caf50; border-radius: 4px; padding: 10px; margin-bottom: 20px; }
-        .status.running { background-color: #fff3e0; border-color: #ff9800; }
-        .status.complete { background-color: #e8f5e8; border-color: #4caf50; }
-        .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid #f3f3f3; border-top: 3px solid #007acc; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        h3 { color: #cccccc; }
+        .section { margin: 20px 0; padding: 15px; border-left: 4px solid #007acc; background-color: #3a3a3a; }
+        .port { display: inline-block; margin: 5px; padding: 5px 10px; background-color: #1e3a5f; border-radius: 4px; color: #ffffff; }
+        .vuln { color: #ff6b6b; font-weight: bold; }
+        .web-page { margin: 5px 0; padding: 5px; background-color: #2d4a2d; border-radius: 4px; }
+        .web-page a { color: #4caf50; text-decoration: none; }
+        .web-page a:hover { color: #66bb6a; text-decoration: underline; }
+        .forbidden { background-color: #4a3a2d; }
+        .forbidden a { color: #ff9800; }
+        .forbidden a:hover { color: #ffb74d; }
+        .misc { background-color: #3a2d4a; }
+        .misc a { color: #9c27b0; }
+        .misc a:hover { color: #ba68c8; }
+        .timestamp { color: #888888; font-size: 0.9em; margin-bottom: 20px; }
+        .status { background-color: #2d4a2d; border: 1px solid #4caf50; border-radius: 4px; padding: 10px; margin-bottom: 20px; color: #e0e0e0; }
+        .status.running { background-color: #4a3a2d; border-color: #ff9800; }
+        .status.scanning { background-color: #2d4a2d; border-color: #007acc; }
+        .status.complete { background-color: #2d4a2d; border-color: #4caf50; }
+        .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid #555555; border-top: 3px solid #007acc; border-radius: 50%; animation: spin 1s linear infinite; }
+        p { color: #cccccc; }
     </style>
-    <script>
-        function updateStatus(status, message, target) {
-            const statusDiv = document.getElementById('script-status');
-            const targetDiv = document.getElementById('target-display');
-            statusDiv.className = 'status ' + status;
-            
-            if (status === 'complete') {
-                statusDiv.innerHTML = '<strong>Status:</strong> ' + message;
-            } else {
-                statusDiv.innerHTML = '<strong>Status:</strong> <span class="spinner"></span> ' + message;
-            }
-            
-            if (target) {
-                targetDiv.innerHTML = 'Target: ' + target;
-            }
-        }
-        
-        function checkProgress() {
-            // This would be updated by the script
-            fetch('status.json')
-                .then(response => response.json())
-                .then(data => {
-                    updateStatus(data.status, data.message, data.target);
-                    if (data.status !== 'complete') {
-                        setTimeout(checkProgress, 1000);
-                    }
-                    // Stop checking when complete - don't schedule another check
-                })
-                .catch(() => {
-                    // If status file doesn't exist, assume script is done
-                    updateStatus('complete', 'Enumeration completed');
-                    // Don't schedule another check - script is finished
-                });
-        }
-        
-        // Start checking progress when page loads
-        window.onload = function() {
-            checkProgress();
-        };
-    </script>
 </head>
 <body>
     <div class="container">
         <h1>Enumeration Report</h1>
         <div class="timestamp">Generated on: $(date)</div>
         <div id="target-display" class="timestamp">Target: $rhost</div>
-        
-        <div id="script-status" class="status running">
-            <strong>Status:</strong> <span class="spinner"></span> Script is running...
-        </div>
         
         <div class="section">
             <h2>Open Ports</h2>
@@ -482,7 +538,7 @@ EOF
 
 if [[ ${#forbidden_pages[@]} -gt 0 ]]; then
     for page in "${forbidden_pages[@]}"; do
-        echo "            <div class=\"web-page forbidden\">$page</div>" >> output/enumeration_report.html
+        echo "            <div class=\"web-page forbidden\"><a href=\"$page\" target=\"_blank\">$page</a></div>" >> output/enumeration_report.html
     done
 else
     echo "            <p>No forbidden pages found</p>" >> output/enumeration_report.html
@@ -521,5 +577,9 @@ echo "Cleanup complete. Main findings saved to HTML report."
 
 # Remove status file last
 rm -f output/status.json
+
+# At the end of the script, print export command for user
+echo "\n[!] To use RHOST in your shell, run:"
+echo "export RHOST=$RHOST"
 
 
