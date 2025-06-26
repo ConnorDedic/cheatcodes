@@ -13,6 +13,6 @@ To use, just run:
 export RHOST="<target>"
 ./stalk.sh
 ```
-
+![scanningNMAP(itslegal)](images/demo.png)
 The script will prompt you to set or confirm the RHOST (target) as needed.
 also this if for ctf's only, not stalking you ex. just dont. 
