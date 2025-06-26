@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Enumeration Report - 172.16.2.57</title>
+    <title>Enigma-3NMA cheat codes - scanme.nmap.org</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f0f0f0; }
         .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         h1 { color: #333; border-bottom: 2px solid #007acc; padding-bottom: 10px; }
         h2 { color: #007acc; margin-top: 30px; }
@@ -13,38 +13,93 @@
         .web-page { margin: 5px 0; padding: 5px; background-color: #f1f8e9; border-radius: 4px; }
         .forbidden { background-color: #fff3e0; }
         .timestamp { color: #666; font-size: 0.9em; margin-bottom: 20px; }
+        .status { background-color: #e8f5e8; border: 1px solid #4caf50; border-radius: 4px; padding: 10px; margin-bottom: 20px; }
+        .status.running { background-color: #fff3e0; border-color: #ff9800; }
+        .status.complete { background-color: #e8f5e8; border-color: #4caf50; }
+        .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid #f3f3f3; border-top: 3px solid #007acc; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
+    <script>
+        function updateStatus(status, message, target) {
+            const statusDiv = document.getElementById('script-status');
+            const targetDiv = document.getElementById('target-display');
+            statusDiv.className = 'status ' + status;
+            
+            if (status === 'complete') {
+                statusDiv.innerHTML = '<strong>Status:</strong> ' + message;
+            } else {
+                statusDiv.innerHTML = '<strong>Status:</strong> <span class="spinner"></span> ' + message;
+            }
+            
+            if (target) {
+                targetDiv.innerHTML = 'Target: ' + target;
+            }
+        }
+        
+        function checkProgress() {
+            // This would be updated by the script
+            fetch('status.json')
+                .then(response => response.json())
+                .then(data => {
+                    updateStatus(data.status, data.message, data.target);
+                    if (data.status !== 'complete') {
+                        setTimeout(checkProgress, 1000);
+                    }
+                    // Stop checking when complete - don't schedule another check
+                })
+                .catch(() => {
+                    // If status file doesn't exist, assume script is done
+                    updateStatus('complete', 'Enumeration completed');
+                    // Don't schedule another check - script is finished
+                });
+        }
+        
+        // Start checking progress when page loads
+        window.onload = function() {
+            checkProgress();
+        };
+    </script>
 </head>
 <body>
     <div class="container">
         <h1>Enumeration Report</h1>
-        <div class="timestamp">Generated on: Wed Jun 25 04:10:31 PM MDT 2025</div>
-        <div class="timestamp">Target: 172.16.2.57</div>
+        <div class="timestamp">Generated on: Wed Jun 25 06:02:46 PM MDT 2025</div>
+        <div id="target-display" class="timestamp">Target: scanme.nmap.org</div>
+        
+        <div id="script-status" class="status running">
+            <strong>Status:</strong> <span class="spinner"></span> Script is running...
+        </div>
         
         <div class="section">
             <h2>Open Ports</h2>
             <div>
-                <span class="port">135</span>
-                <span class="port">139</span>
-                <span class="port">445</span>
-                <span class="port">3389</span>
-                <span class="port">5357</span>
-                <span class="port">5985</span>
+                <span class="port">22 (SSH)</span>
+                <span class="port">80 (HTTP)</span>
+                <span class="port">9929 (Unknown)</span>
+                <span class="port">31337 (Unknown)</span>
             </div>
         </div>
         
         <div class="section">
             <h2>Web Directories Found</h2>
             <h3>Accessible Pages</h3>
-            <p>No accessible pages found</p>
+            <div class="web-page"><a href="http://scanme.nmap.org:80/.svn" target="_blank">http://scanme.nmap.org:80/.svn</a></div>
+            <div class="web-page"><a href="http://scanme.nmap.org:80/images" target="_blank">http://scanme.nmap.org:80/images</a></div>
+            <div class="web-page"><a href="http://scanme.nmap.org:80/index" target="_blank">http://scanme.nmap.org:80/index</a></div>
+            <div class="web-page"><a href="http://scanme.nmap.org:80/index.html" target="_blank">http://scanme.nmap.org:80/index.html</a></div>
+            <div class="web-page"><a href="http://scanme.nmap.org:80/shared" target="_blank">http://scanme.nmap.org:80/shared</a></div>
             <h3>Forbidden Pages (Potential Interest)</h3>
-            <p>No forbidden pages found</p>
+            <div class="web-page forbidden">http://scanme.nmap.org:80/.htpasswd</div>
+            <div class="web-page forbidden">http://scanme.nmap.org:80/.svn/entries</div>
+            <div class="web-page forbidden">http://scanme.nmap.org:80/.htaccess</div>
+            <div class="web-page forbidden">http://scanme.nmap.org:80/.hta</div>
+            <div class="web-page forbidden">http://scanme.nmap.org:80/favicon.ico</div>
+            <div class="web-page forbidden">http://scanme.nmap.org:80/server-status</div>
         </div>
         
         <div class="section">
             <h2>Potential Vulnerabilities</h2>
             <div>
-                <div class="vuln">• SMB Message Signing not required (AS-REP Roasting/Kerberoasting potential)</div>
             </div>
         </div>
     </div>
