@@ -2,10 +2,55 @@
 
 ## this is a script to enumerate a target
 
+# Initialize arrays for web pages
 declare -a accessible_pages
 declare -a forbidden_pages
+declare -a redirect_pages
 declare -a misc_pages
+declare -a smb_shares
 smb_vulnerable=false
+ftp_anon_vulnerable=false
+
+# Function to remove duplicates from arrays and consolidate similar URLs
+deduplicate_array() {
+    local -n arr=$1
+    local -a unique=()
+    local -A seen=()
+    
+    for item in "${arr[@]}"; do
+        # Normalize URL by removing common file extensions
+        normalized_item="$item"
+        normalized_item="${normalized_item%.html}"
+        normalized_item="${normalized_item%.htm}"
+        normalized_item="${normalized_item%.php}"
+        normalized_item="${normalized_item%.asp}"
+        normalized_item="${normalized_item%.aspx}"
+        normalized_item="${normalized_item%.jsp}"
+        normalized_item="${normalized_item%.js}"
+        normalized_item="${normalized_item%.css}"
+        normalized_item="${normalized_item%.xml}"
+        normalized_item="${normalized_item%.json}"
+        normalized_item="${normalized_item%.txt}"
+        normalized_item="${normalized_item%.pdf}"
+        normalized_item="${normalized_item%.doc}"
+        normalized_item="${normalized_item%.docx}"
+        normalized_item="${normalized_item%.xls}"
+        normalized_item="${normalized_item%.xlsx}"
+        normalized_item="${normalized_item%.ppt}"
+        normalized_item="${normalized_item%.pptx}"
+        normalized_item="${normalized_item%.zip}"
+        normalized_item="${normalized_item%.tar}"
+        normalized_item="${normalized_item%.gz}"
+        normalized_item="${normalized_item%.rar}"
+        
+        if [[ ! -v seen["$normalized_item"] ]]; then
+            seen["$normalized_item"]=1
+            unique+=("$item")
+        fi
+    done
+    
+    arr=("${unique[@]}")
+}
 
 update_status() {
     local status=$1
@@ -70,6 +115,11 @@ cat > output/enumeration_report.html << EOF
         .status.complete { background-color: #2d4a2d; border-color: #4caf50; }
         .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid #555555; border-top: 3px solid #007acc; border-radius: 50%; animation: spin 1s linear infinite; }
         p { color: #cccccc; }
+        .redirect { background-color: #2d4a4a; }
+        .redirect a { color: #00bcd4; }>&
+        .redirect a:hover { color: #26c6da; }
+        .smb-share { margin: 5px 0; padding: 5px; background-color: #2d4a2d; border-radius: 4px; }
+        .smb-share span { color: #4caf50; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -88,15 +138,59 @@ cat > output/enumeration_report.html << EOF
         <div class="section">
             <h2>Web Directories Found</h2>
             <h3>Accessible Pages</h3>
-            <p>Scanning in progress...</p>
+            $(if [[ ${#accessible_pages[@]} -gt 0 ]]; then
+                for page in "${accessible_pages[@]}"; do
+                    echo "<div class=\"web-page\"><a href=\"$page\" target=\"_blank\">$page</a></div>"
+                done
+            else
+                echo "<p>No accessible pages found</p>"
+            fi)
+            <h3>Redirect Pages</h3>
+            $(if [[ ${#redirect_pages[@]} -gt 0 ]]; then
+                for page in "${redirect_pages[@]}"; do
+                    echo "<div class=\"web-page redirect\"><a href=\"$page\" target=\"_blank\">$page</a></div>"
+                done
+            else
+                echo "<p>No redirect pages found</p>"
+            fi)
             <h3>Forbidden Pages (Potential Interest)</h3>
-            <p>Scanning in progress...</p>
+            $(if [[ ${#forbidden_pages[@]} -gt 0 ]]; then
+                for page in "${forbidden_pages[@]}"; do
+                    echo "<div class=\"web-page forbidden\"><a href=\"$page\" target=\"_blank\">$page</a></div>"
+                done
+            else
+                echo "<p>No forbidden pages found</p>"
+            fi)
+        </div>
+        
+        <div class="section">
+            <h2>SMB Shares</h2>
+            $(if [[ ${#smb_shares[@]} -gt 0 ]]; then
+                for share in "${smb_shares[@]}"; do
+                    echo "<div class=\"smb-share\"><span>$share</span></div>"
+                done
+            else
+                echo "<p>No SMB shares found</p>"
+            fi)
         </div>
         
         <div class="section">
             <h2>Potential Vulnerabilities</h2>
             <div>
-                <p>Scanning in progress...</p>
+                $(if [[ "$smb_vulnerable" == "true" ]]; then
+                    if grep -q "Message signing enabled but not required" output/smb_check.txt 2>/dev/null; then
+                        echo "<p class=\"vuln\">• SMB Message Signing not required (AS-REP Roasting/Kerberoasting potential)</p>"
+                    fi
+                    if grep -q "Anonymous access granted\|NULL sessions are allowed\|Anonymous login successful\|Guest login successful" output/smb_check.txt 2>/dev/null; then
+                        echo "<p class=\"vuln\">• SMB Null Sessions allowed (information disclosure vulnerability)</p>"
+                    fi
+                fi)
+                $(if [[ "$ftp_anon_vulnerable" == "true" ]]; then
+                    echo "<p class=\"vuln\">• Anonymous FTP login allowed (potential security risk)</p>"
+                fi)
+                $(if [[ "$smb_vulnerable" == "false" && "$ftp_anon_vulnerable" == "false" ]]; then
+                    echo "<p>No obvious vulnerabilities detected</p>"
+                fi)
             </div>
         </div>
     </div>
@@ -133,7 +227,7 @@ dir_fuzz() {
     if [[ -f "output/ffuf_$port.json" ]]; then
         echo "Parsing ffuf results for port $port..."
         
-        # Use jq to extract results in a simpler format
+        # Use a more robust parsing approach
         while IFS= read -r result; do
             # Parse the result line: path,status,url
             path=$(echo "$result" | cut -d',' -f1)
@@ -145,20 +239,44 @@ dir_fuzz() {
                 final_url="http://$rhost:$port/$path"
                 
                 # Categorize based on status code
-                if [[ "$status" =~ ^(200|204|301|302|307)$ ]]; then
-                    # Check if already in forbidden and remove
+                if [[ "$status" =~ ^(200|204)$ ]]; then
+                    # Check if already in other arrays and remove
                     for i in "${!forbidden_pages[@]}"; do
                         if [[ "${forbidden_pages[$i]}" == "$final_url" ]]; then
                             unset "forbidden_pages[$i]"
                         fi
                     done
+                    for i in "${!redirect_pages[@]}"; do
+                        if [[ "${redirect_pages[$i]}" == "$final_url" ]]; then
+                            unset "redirect_pages[$i]"
+                        fi
+                    done
                     # Add to accessible
                     accessible_pages+=("$final_url")
-                elif [[ "$status" =~ ^(401|403)$ ]]; then
-                    # Check if already in accessible and remove
+                elif [[ "$status" =~ ^(301|302|307)$ ]]; then
+                    # Check if already in other arrays and remove
                     for i in "${!accessible_pages[@]}"; do
                         if [[ "${accessible_pages[$i]}" == "$final_url" ]]; then
                             unset "accessible_pages[$i]"
+                        fi
+                    done
+                    for i in "${!forbidden_pages[@]}"; do
+                        if [[ "${forbidden_pages[$i]}" == "$final_url" ]]; then
+                            unset "forbidden_pages[$i]"
+                        fi
+                    done
+                    # Add to redirects
+                    redirect_pages+=("$final_url")
+                elif [[ "$status" =~ ^(401|403)$ ]]; then
+                    # Check if already in other arrays and remove
+                    for i in "${!accessible_pages[@]}"; do
+                        if [[ "${accessible_pages[$i]}" == "$final_url" ]]; then
+                            unset "accessible_pages[$i]"
+                        fi
+                    done
+                    for i in "${!redirect_pages[@]}"; do
+                        if [[ "${redirect_pages[$i]}" == "$final_url" ]]; then
+                            unset "redirect_pages[$i]"
                         fi
                     done
                     # Add to forbidden
@@ -170,10 +288,17 @@ dir_fuzz() {
         # Rebuild arrays to remove gaps
         accessible_pages=("${accessible_pages[@]}")
         forbidden_pages=("${forbidden_pages[@]}")
+        redirect_pages=("${redirect_pages[@]}")
+        
+        # Remove duplicates
+        deduplicate_array accessible_pages
+        deduplicate_array forbidden_pages
+        deduplicate_array redirect_pages
         
         echo "Final results for port $port:"
         echo "  Accessible: ${#accessible_pages[@]} pages"
         echo "  Forbidden: ${#forbidden_pages[@]} pages"
+        echo "  Redirects: ${#redirect_pages[@]} pages"
     fi
 }
 
@@ -292,7 +417,19 @@ if grep -q "Message signing enabled but not required" output/port_scan.txt; then
 fi
 
 for port in "${open_ports[@]}"; do
-  if [[ "$port" == "22" ]]; then
+  if [[ "$port" == "21" ]]; then
+    echo "Port 21 (FTP)"
+    echo "Checking for anonymous FTP access..."
+    if [[ "$is_ipv6" == "true" ]]; then
+        nmap -6 --script ftp-anon -p 21 "$resolved_ip" > output/ftp_check.txt
+    else
+        nmap --script ftp-anon -p 21 "$resolved_ip" > output/ftp_check.txt
+    fi
+    if grep -q "Anonymous FTP login allowed" output/ftp_check.txt; then
+      echo "WARNING: Anonymous FTP login allowed - potential security risk"
+      ftp_anon_vulnerable=true
+    fi
+  elif [[ "$port" == "22" ]]; then
     echo "Port 22 (SSH)"
   elif [[ "$port" == "53" ]]; then
     echo "Port 53 (DNS)"
@@ -308,28 +445,56 @@ for port in "${open_ports[@]}"; do
     echo "Port 88 (Kerberos)"
   elif [[ "$port" == "445" ]]; then
     echo "Port 445 (SMB)"
-    echo "Checking SMB message signing..."
+    echo "Checking SMB message signing, enumerating shares, and testing null sessions..."
     if [[ "$is_ipv6" == "true" ]]; then
-        nmap -6 --script smb-security-mode -p 445 "$resolved_ip" > output/smb_check.txt
+        nmap -6 --script smb-security-mode,smb-enum-shares,smb-enum-users,smb-enum-domains,smb-enum-groups -p 445 "$resolved_ip" > output/smb_check.txt
     else
-        nmap --script smb-security-mode -p 445 "$resolved_ip" > output/smb_check.txt
+        nmap --script smb-security-mode,smb-enum-shares,smb-enum-users,smb-enum-domains,smb-enum-groups -p 445 "$resolved_ip" > output/smb_check.txt
     fi
     if grep -q "Message signing enabled but not required" output/smb_check.txt; then
       echo "WARNING: SMB message signing not required - potential target for AS-REP Roasting and Kerberoasting"
       smb_vulnerable=true
     fi
+    if grep -q "Anonymous access granted\|NULL sessions are allowed\|Anonymous login successful\|Guest login successful" output/smb_check.txt; then
+      echo "WARNING: SMB null sessions allowed - potential information disclosure vulnerability"
+      smb_vulnerable=true
+    fi
+    
+    # Extract SMB share names
+    echo "Extracting SMB share names..."
+    while IFS= read -r line; do
+        if [[ "$line" =~ ^[[:space:]]*Share[[:space:]]+name:[[:space:]]+(.+)$ ]]; then
+            share_name="${BASH_REMATCH[1]}"
+            smb_shares+=("$share_name")
+            echo "Found SMB share: $share_name"
+        fi
+    done < output/smb_check.txt
   elif [[ "$port" == "139" ]]; then
     echo "Port 139 (SMB)"
-    echo "Checking SMB message signing..."
+    echo "Checking SMB message signing, enumerating shares, and testing null sessions..."
     if [[ "$is_ipv6" == "true" ]]; then
-        nmap -6 --script smb-security-mode -p 139 "$resolved_ip" > output/smb_check.txt
+        nmap -6 --script smb-security-mode,smb-enum-shares,smb-enum-users,smb-enum-domains,smb-enum-groups -p 139 "$resolved_ip" > output/smb_check.txt
     else
-        nmap --script smb-security-mode -p 139 "$resolved_ip" > output/smb_check.txt
+        nmap --script smb-security-mode,smb-enum-shares,smb-enum-users,smb-enum-domains,smb-enum-groups -p 139 "$resolved_ip" > output/smb_check.txt
     fi
     if grep -q "Message signing enabled but not required" output/smb_check.txt; then
       echo "WARNING: SMB message signing not required - potential target for AS-REP Roasting and Kerberoasting"
       smb_vulnerable=true
     fi
+    if grep -q "Anonymous access granted\|NULL sessions are allowed\|Anonymous login successful\|Guest login successful" output/smb_check.txt; then
+      echo "WARNING: SMB null sessions allowed - potential information disclosure vulnerability"
+      smb_vulnerable=true
+    fi
+    
+    # Extract SMB share names
+    echo "Extracting SMB share names..."
+    while IFS= read -r line; do
+        if [[ "$line" =~ ^[[:space:]]*Share[[:space:]]+name:[[:space:]]+(.+)$ ]]; then
+            share_name="${BASH_REMATCH[1]}"
+            smb_shares+=("$share_name")
+            echo "Found SMB share: $share_name"
+        fi
+    done < output/smb_check.txt
   elif [[ "$port" == "389" ]]; then
     echo "Port 389 (LDAP)"
   elif [[ "$port" == "636" ]]; then
@@ -366,10 +531,21 @@ for page in "${accessible_pages[@]}"; do
     echo "$page"
 done
 
+echo "Redirect pages:"
+for page in "${redirect_pages[@]}"; do
+    echo "$page"
+done
+
 echo "Forbidden pages:"
 for page in "${forbidden_pages[@]}"; do
     echo "$page"
 done
+
+# Final deduplication before summary
+deduplicate_array accessible_pages
+deduplicate_array redirect_pages
+deduplicate_array forbidden_pages
+deduplicate_array smb_shares
 
 echo ""
 echo "=========================================="
@@ -421,6 +597,15 @@ else
     echo "No accessible pages found"
 fi
 
+if [[ ${#redirect_pages[@]} -gt 0 ]]; then
+    echo "Redirect pages:"
+    for page in "${redirect_pages[@]}"; do
+        echo "  - $page"
+    done
+else
+    echo "No redirect pages found"
+fi
+
 if [[ ${#forbidden_pages[@]} -gt 0 ]]; then
     echo "Forbidden pages (potential interest):"
     for page in "${forbidden_pages[@]}"; do
@@ -430,9 +615,26 @@ else
     echo "No forbidden pages found"
 fi
 
+if [[ ${#smb_shares[@]} -gt 0 ]]; then
+    echo "SMB Shares Found:"
+    for share in "${smb_shares[@]}"; do
+        echo "  - $share"
+    done
+else
+    echo "No SMB shares found"
+fi
+
 echo "POTENTIAL VULNERABILITIES:"
 if [[ "$smb_vulnerable" == "true" ]]; then
-    echo "  - SMB Message Signing not required (AS-REP Roasting/Kerberoasting potential)"
+    if grep -q "Message signing enabled but not required" output/smb_check.txt 2>/dev/null; then
+        echo "  - SMB Message Signing not required (AS-REP Roasting/Kerberoasting potential)"
+    fi
+    if grep -q "Anonymous access granted\|NULL sessions are allowed\|Anonymous login successful\|Guest login successful" output/smb_check.txt 2>/dev/null; then
+        echo "  - SMB Null Sessions allowed (information disclosure vulnerability)"
+    fi
+fi
+if [[ "$ftp_anon_vulnerable" == "true" ]]; then
+    echo "  - Anonymous FTP login allowed (potential security risk)"
 fi
 
 echo ""
@@ -470,6 +672,11 @@ cat > output/enumeration_report.html << EOF
         .status.complete { background-color: #2d4a2d; border-color: #4caf50; }
         .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid #555555; border-top: 3px solid #007acc; border-radius: 50%; animation: spin 1s linear infinite; }
         p { color: #cccccc; }
+        .redirect { background-color: #2d4a4a; }
+        .redirect a { color: #00bcd4; }
+        .redirect a:hover { color: #26c6da; }
+        .smb-share { margin: 5px 0; padding: 5px; background-color: #2d4a2d; border-radius: 4px; }
+        .smb-share span { color: #4caf50; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -533,6 +740,18 @@ else
 fi
 
 cat >> output/enumeration_report.html << EOF
+            <h3>Redirect Pages</h3>
+EOF
+
+if [[ ${#redirect_pages[@]} -gt 0 ]]; then
+    for page in "${redirect_pages[@]}"; do
+        echo "            <div class=\"web-page redirect\"><a href=\"$page\" target=\"_blank\">$page</a></div>" >> output/enumeration_report.html
+    done
+else
+    echo "            <p>No redirect pages found</p>" >> output/enumeration_report.html
+fi
+
+cat >> output/enumeration_report.html << EOF
             <h3>Forbidden Pages (Potential Interest)</h3>
 EOF
 
@@ -545,6 +764,17 @@ else
 fi
 
 cat >> output/enumeration_report.html << EOF
+        </div>
+        
+        <div class="section">
+            <h2>SMB Shares</h2>
+            $(if [[ ${#smb_shares[@]} -gt 0 ]]; then
+                for share in "${smb_shares[@]}"; do
+                    echo "<div class=\"smb-share\"><span>$share</span></div>"
+                done
+            else
+                echo "<p>No SMB shares found</p>"
+            fi)
         </div>
         
         <div class="section">
